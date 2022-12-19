@@ -37,28 +37,16 @@ function luamap.set_singlenode()
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
-	-- local t0 = os.clock()
-	local x1 = maxp.x
-	local y1 = maxp.y
-	local z1 = maxp.z
-	local x0 = minp.x
-	local y0 = minp.y
-	local z0 = minp.z
-	
+
+
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
 	local data = vm:get_data()
-	
-
-
-	local sidelen = x1 - x0 + 1
-	local ystridevm = sidelen + 32
-	--local zstridevm = ystride ^ 2
-    
+	local sidelen = maxp.x - minp.x + 1
 	local chulens3d = {x=sidelen, y=sidelen+17, z=sidelen}
 	local chulens2d = {x=sidelen, y=sidelen, z=1}
-	local minpos3d = {x=x0, y=y0-16, z=z0}
-	local minpos2d = {x=x0, y=z0}
+	local minpos3d = {x=minp.x, y=minp.y-16, z=minp.z}
+	local minpos2d = {x=minp.x, y=minp.z}
 	
     for name,elements in pairs(luamap.noises) do
         if luamap.noises[name].type == "2d" then
@@ -69,18 +57,12 @@ minetest.register_on_generated(function(minp, maxp, seed)
             luamap.noises[name].nvals = luamap.noises[name].nobj:get3dMap_flat(minpos3d)
         end
     end
-       
-
-
 	local ni3d = 1
 	local ni2d = 1
-
-	for z = z0, z1 do
-
-		for y = y0 - 16, y1 + 1 do
-			local vi = area:index(x0, y, z)
-			for x = x0, x1 do
-				
+	for z = minp.z, maxp.z do
+		for y = minp.y - 16, maxp.y + 1 do
+			local vi = area:index(minp.x, y, z)
+			for x = minp.x, maxp.x do
                 local noise_vals = {}
                 for name,elements in pairs(luamap.noises) do
                     if elements.type == "2d" then
@@ -89,7 +71,6 @@ minetest.register_on_generated(function(minp, maxp, seed)
                         noise_vals[name] = elements.nvals[ni3d]
                     end
                 end
-
                 data[vi] = luamap.logic(noise_vals,x,y,z,seed)
 
 				ni3d = ni3d + 1
