@@ -1,14 +1,11 @@
 
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> (original mapgen code, modified by MisterE)
  
- Copyright (C) 2022 MisterE
+ Copyright (C) 2022 MisterE (api code)
 
- Copyright (C) 2022 regulus
+ Copyright (C) 2022 regulus (some mapgen code)
 
- Copyright (C) 2022 LMD
-
- Copyright (C) 2010 David Ng (voronoi.lua)
-
+ Copyright (C) 2022 LMD (some mapgen code)
 
  MIT LICENSE
 

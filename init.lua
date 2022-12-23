@@ -7,9 +7,19 @@ function luamap.remap(val, min_val, max_val, min_map, max_map)
 	return (val-min_val)/(max_val-min_val) * (max_map-min_map) + min_map
 end
 
+-- linear interpolation, optional power modifier
 function luamap.lerp(var_a, var_b, ratio, power)
+	if ratio > 1 then ratio = 1 end
+	if ratio < 0 then ratio = 0 end
 	power = power or 1
 	return (1-ratio)*(var_a^power) + (ratio*(var_b^power))
+end
+
+function luamap.coserp(var_a,var_b,ratio)
+	if ratio > 1 then ratio = 1 end
+	if ratio < 0 then ratio = 0 end
+	local rat2 = (1-math.cos(ratio*3.14159))/2
+	return (var_a*(1-rat2)+var_b*rat2)
 end
 
 function luamap.register_noise(name,data)
@@ -17,10 +27,14 @@ function luamap.register_noise(name,data)
 		luamap.noises_2d[name] = {}
 		luamap.noises_2d[name].np_vals = data.np_vals
 		luamap.noises_2d[name].nobj = nil
+		luamap.noises_2d[name].ymin = data.ymin or -31000
+		luamap.noises_2d[name].ymax = data.ymax or 31000
 	else -- 3d
 		luamap.noises_3d[name] = {}
 		luamap.noises_3d[name].np_vals = data.np_vals
 		luamap.noises_3d[name].nobj = nil
+		luamap.noises_3d[name].ymin = data.ymin or -31000
+		luamap.noises_3d[name].ymax = data.ymax or 31000
 	end
 end
 
@@ -65,13 +79,23 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local minpos2d = {x=minp.x, y=minp.z}
 	
     for name,elements in pairs(noises_2d) do
-		noises_2d[name].nobj = noises_2d[name].nobj or minetest.get_perlin_map(noises_2d[name].np_vals, chulens2d)
-		noises_2d[name].nvals = noises_2d[name].nobj:get_2d_map_flat(minpos2d)
+		if emin.y >= elements.ymin and emax.y <= elements.ymax then
+			noises_2d[name].nobj = noises_2d[name].nobj or minetest.get_perlin_map(noises_2d[name].np_vals, chulens2d)
+			noises_2d[name].nvals = noises_2d[name].nobj:get_2d_map_flat(minpos2d)
+			noises_2d[name].use = true
+		else
+			noises_2d[name].use = false
+		end
     end
 
 	for name,elements in pairs(noises_3d) do
-		noises_3d[name].nobj = noises_3d[name].nobj or minetest.get_perlin_map(noises_3d[name].np_vals, chulens3d)
-		noises_3d[name].nvals = noises_3d[name].nobj:get_3d_map_flat(minpos3d)
+		if emin.y >= elements.ymin and emax.y <= elements.ymax then
+			noises_3d[name].nobj = noises_3d[name].nobj or minetest.get_perlin_map(noises_3d[name].np_vals, chulens3d)
+			noises_3d[name].nvals = noises_3d[name].nobj:get_3d_map_flat(minpos3d)
+			noises_3d[name].use = true
+		else
+			noises_3d[name].use = false
+		end
     end
 
 	local xstride, ystride, zstride = 1,sidelen,sidelen*sidelen
@@ -86,14 +110,18 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		for x = minp.x, maxp.x do
 			
 			for name,elements in pairs(noises_2d) do
-				noise_vals[name] = elements.nvals[i2d]
+				if elements.use then
+					noise_vals[name] = elements.nvals[i2d]
+				end
 			end
 
 			local i3dy=i3dx
 			for y = minp.y, maxp.y do
 				local vi = area:index(x, y, z)
                 for name,elements in pairs(noises_3d) do
-                    noise_vals[name] = elements.nvals[i3dy]
+					if elements.use then
+                    	noise_vals[name] = elements.nvals[i3dy]
+					end
                 end
                 data[vi] = logic(noise_vals,x,y,z,seed)
 				i3dy = i3dy + ystride 

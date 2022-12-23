@@ -1,4 +1,4 @@
--- forces the map into singlenode mode
+-- forces the map into singlenode mode, don't do this if this is just a "realm".
 luamap.set_singlenode()
 
 -- creates a terrain noise
@@ -14,6 +14,7 @@ luamap.register_noise("terrain",{
         lacunarity = 2.0,
         flags = ""
     },
+
 })
 
 
