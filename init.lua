@@ -50,6 +50,12 @@ function luamap.precalc(data, area, vm, minp, maxp, seed)
     return
 end
 
+-- override this function
+function luamap.postcalc(data, area, vm, minp, maxp, seed)
+    return
+end
+
+
 
 -- Set mapgen parameters
 function luamap.set_singlenode()
@@ -78,6 +84,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local minpos3d = {x=minp.x, y=minp.y-16, z=minp.z}
 	local minpos2d = {x=minp.x, y=minp.z}
 	
+	luamap.precalc(data, area, vm, minp, maxp, seed)
+
     for name,elements in pairs(noises_2d) do
 		if emin.y >= elements.ymin and emax.y <= elements.ymax then
 			noises_2d[name].nobj = noises_2d[name].nobj or minetest.get_perlin_map(noises_2d[name].np_vals, chulens2d)
@@ -132,7 +140,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		end
 		i3dz=i3dz+zstride
 	end
-	luamap.precalc(data, area, vm, minp, maxp, seed)
+	luamap.postcalc(data, area, vm, minp, maxp, seed)
 	vm:set_data(data)
 	vm:calc_lighting()
 	vm:write_to_map(data)

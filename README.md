@@ -175,16 +175,40 @@ if the position passed to `luamap.logic` is outside of the y-range, then
 sure to set the y-range to completely encompass the range that you expect to
 find your noises. 
 
+
 ### luamap.precalc
 
 ```lua
 luamap.precalc(data, area, vm, minp, maxp, seed)
 ```
 
+DESCRIPTION: An overridable function called just before calculating the noise
+and calling the logic function for each node.  Best practice is to save the old
+function and call it before adding one's own logic, just like with
+`luamap.logic`
+
+
+### luamap.postcalc
+
+```lua
+luamap.postcalc(data, area, vm, minp, maxp, seed)
+```
+
 DESCRIPTION: An overridable function called just before setting the map lighting
-and data. It offers compatability with biomegen, which needs these parameters to
-function. Best practice is to save the old function and call it before adding
-one's own logic, just like with `luamap.logic`
+and data after the noise has been calculated and luamap.logic has been called
+for each node in the mapblock. It offers compatability with biomegen by Gaël de
+Sailly, which needs these parameters to function. Best practice is to save the
+old function and call it before adding one's own logic, just like with
+`luamap.logic`
+
+example:
+```lua
+local old_postcalc = luamap.precalc
+function luamap.postcalc(data, area, vm, minp, maxp, seed)
+    old_postcalc(data, area, vm, minp, maxp, seed)
+    biomegen.generate_all(data, area, vm, minp, maxp, seed)
+end
+```
 
 ### luamap.set_singlenode
 
