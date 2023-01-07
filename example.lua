@@ -26,10 +26,10 @@ local water_level = 0
 
 local old_logic = luamap.logic
 
-function luamap.logic(noise_vals,x,y,z,seed,original_content)
+function luamap.logic(noise_vals,x,y,z,seed)
 
     -- get any terrain defined in another mod
-    local content = old_logic(noise_vals,x,y,z,seed,original_content)
+    local content = old_logic(noise_vals,x,y,z,seed)
 
     if y < water_level then
         content = c_water

@@ -41,8 +41,8 @@ end
 local c_air = minetest.get_content_id("air")
 
 -- override this function
-function luamap.logic(noise_vals,x,y,z,seed,original_content)
-    return original_content
+function luamap.logic(noise_vals,x,y,z,seed)
+    return c_air
 end
 
 -- override this function
@@ -131,7 +131,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
                     	noise_vals[name] = elements.nvals[i3dy]
 					end
                 end
-                data[vi] = logic(noise_vals,x,y,z,seed,data[vi])
+                data[vi] = logic(noise_vals,x,y,z,seed)
 				i3dy = i3dy + ystride 
 			end
 			
