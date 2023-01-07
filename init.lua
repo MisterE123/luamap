@@ -87,7 +87,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	luamap.precalc(data, area, vm, minp, maxp, seed)
 
     for name,elements in pairs(noises_2d) do
-		if emin.y >= elements.ymin and emax.y <= elements.ymax then
+		if not(maxp.y <= elements.ymin and minp.y >= elements.ymax) then
 			noises_2d[name].nobj = noises_2d[name].nobj or minetest.get_perlin_map(noises_2d[name].np_vals, chulens2d)
 			noises_2d[name].nvals = noises_2d[name].nobj:get_2d_map_flat(minpos2d)
 			noises_2d[name].use = true
@@ -97,7 +97,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
     end
 
 	for name,elements in pairs(noises_3d) do
-		if emin.y >= elements.ymin and emax.y <= elements.ymax then
+		if not(maxp.y <= elements.ymin and minp.y >= elements.ymax) then
 			noises_3d[name].nobj = noises_3d[name].nobj or minetest.get_perlin_map(noises_3d[name].np_vals, chulens3d)
 			noises_3d[name].nvals = noises_3d[name].nobj:get_3d_map_flat(minpos3d)
 			noises_3d[name].use = true
