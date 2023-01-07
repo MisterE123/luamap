@@ -13,9 +13,9 @@ local c_stone = minetest.get_content_id("default:stone")
 local c_water = minetest.get_content_id("default:water_source")
 local water_level = 0
 local old_logic = luamap.logic
-function luamap.logic(noise_vals,x,y,z,seed)
+function luamap.logic(noise_vals,x,y,z,seed,original_content)
     -- get any terrain defined in another mod
-    local content = old_logic(noise_vals,x,y,z,seed)
+    local content = old_logic(noise_vals,x,y,z,seed,original_content)
     -- use our own logic to add to that logic 
     -- make any nodes below sea level water and below stone level stone
     if y < water_level then
@@ -54,9 +54,9 @@ local c_stone = minetest.get_content_id("default:stone")
 local c_water = minetest.get_content_id("default:water_source")
 local water_level = 0
 local old_logic = luamap.logic
-function luamap.logic(noise_vals,x,y,z,seed)
+function luamap.logic(noise_vals,x,y,z,seed,original_content)
     -- get any terrain defined in another mod
-    local content = old_logic(noise_vals,x,y,z,seed)
+    local content = old_logic(noise_vals,x,y,z,seed,original_content)
 
     if y < water_level then
         content = c_water
@@ -92,7 +92,7 @@ luamap.register_noise("terrainmap",{
 
 ### luamap.logic
 ```lua
-luamap.logic(noise_vals,x,y,z,seed)
+luamap.logic(noise_vals,x,y,z,seed,original_content)
 ```
 
 DESCRIPTION: Override this function to define mapgen logic. Best practice is to
@@ -120,6 +120,10 @@ The coordinates of the position to set the content for
 `seed`
 
 The seed passed to minetest.register_on_generated()
+
+`original_content`
+
+The content id that the original mapgen created. Air if set to singlenode.
 
 RETURNS:
 
