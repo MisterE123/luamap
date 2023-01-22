@@ -42,7 +42,7 @@ local c_air = minetest.get_content_id("air")
 
 -- override this function
 function luamap.logic(noise_vals,x,y,z,seed,original_content)
-    return c_air
+    return original_content or c_air
 end
 
 -- override this function
