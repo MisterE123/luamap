@@ -16,6 +16,11 @@ Write your mapgen code in a lua script that you call using `minetest.register_ma
 `luamap.set_singlenode` is only available in the regular lua environment, so if you want to call it, call it in init.lua, not in an mapgen script file.
 
 
+Note: for the async environment, it is necessary to use https://gitlab.com/mistere123.coding/biomegen-mglua-refactor
+for now for biomes.
+
+
+
 
 ```lua
 local c_stone = minetest.get_content_id("default:stone")
