@@ -1,0 +1,2 @@
+#    Use async mapgen environment for luamap when implemented by mods. Do not enable on old Minetest versions that do not support the async mapgen env.
+luamap_use_async (Luamap Use async env) bool true
