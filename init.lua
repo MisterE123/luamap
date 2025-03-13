@@ -15,9 +15,11 @@ core.register_on_generated(function(minp, maxp, seed)
 	vm:write_to_map(data)
 end)
 
-local use_async = core.settings:get("luamap_use_async")
+
+local use_async = core.settings:get_bool("luamap_use_async", true)
+
 
 -- register async mapgen
-if use_async == "true" then
+if use_async == true then
 	core.register_mapgen_script(core.get_modpath("luamap").."/async.lua")
 end

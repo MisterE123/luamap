@@ -3,6 +3,15 @@ Luamap is a library for modders to focus on mapgen logic rather than figuruing
 out how mapgen works. using it is simple: override the luamap.logic function.
 The goal of the luamap logic function is to return a content id at a point.
 
+
+Luamap now has support for the async mapgen environment. You can call any luamap
+function from a mapgen script, except luamap.set_singlenode(), which should still
+be called from the main environment.
+
+Make sure that luamap_use_async is set to false if you are using an old version
+of Minetest which does not support the async api
+
+
 Calling the old logic function before running your own logic allows you to add
 to other mods that use luamap. If you do not save and call the old luamap
 function, then your mod will completely override any other mapgens made by other
